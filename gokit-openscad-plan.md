@@ -93,9 +93,9 @@ nut_pocket_tol = 0.3;       // mm, nut pocket oversize for capture
 // ============================================================
 // VELCRO STRAP MOUNTS
 // ============================================================
-velcro_width = 25.4;        // mm, 1" velcro - standardize all straps
+velcro_width = 19.05;       // mm, 0.75" velcro - standardize all straps
 velcro_channel_clearance = 1.0;  // mm, channel oversize
-mount_body_w = 30.0;        // mm
+mount_body_w = 25.0;        // mm
 mount_body_d = 25.0;        // mm
 mount_body_h = 8.0;         // mm, sets max gear height that can be strapped
 
