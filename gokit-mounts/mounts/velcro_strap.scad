@@ -36,31 +36,23 @@ module velcro_mount() {
             translate([0, base_depth - arm_thickness, base_height])
                 cube([base_width, arm_thickness, window_bottom_z - base_height]);
 
-            // Left side wall (beside window)
+            // Left side wall (beside window) - extends up to top cylinder
             translate([0, base_depth - arm_thickness, window_bottom_z])
-                cube([side_wall_thickness, arm_thickness, channel_height]);
+                cube([side_wall_thickness, arm_thickness, channel_height + arm_thickness / 2]);
 
-            // Right side wall (beside window)
+            // Right side wall (beside window) - extends up to top cylinder
             translate([base_width - side_wall_thickness, base_depth - arm_thickness, window_bottom_z])
-                cube([side_wall_thickness, arm_thickness, channel_height]);
+                cube([side_wall_thickness, arm_thickness, channel_height + arm_thickness / 2]);
 
-            // Cylinder spanning window opening (top and bottom of window in one piece)
+            // Cylinder at top of window (forms rounded top of window opening and continues across wall)
+            // Positioned at top of window opening
             translate([
-                (base_width - channel_width) / 2,
+                0,
                 base_depth - arm_thickness / 2,
-                window_bottom_z + channel_height / 2
+                window_bottom_z + channel_height
             ])
                 rotate([0, 90, 0])
-                    cylinder(h = channel_width, r = arm_thickness / 2, $fn = 32);
-
-            // Upper wall section (above window) with rounded top
-            translate([0, base_depth - arm_thickness, window_bottom_z + channel_height])
-                cube([base_width, arm_thickness, arm_height - (window_bottom_z - base_height) - channel_height - 2]);
-
-            // Rounded top edge of wall (half cylinder)
-            translate([0, base_depth - arm_thickness / 2, base_height + arm_height - 2])
-                rotate([0, 90, 0])
-                    cylinder(h = base_width, r = 2, $fn = 32);
+                    cylinder(h = base_width, r = arm_thickness / 2, $fn = 32);
         }
 
         // Diagonal support gussets on each side (on back of vertical arm)
