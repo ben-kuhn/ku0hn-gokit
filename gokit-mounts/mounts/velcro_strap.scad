@@ -84,7 +84,8 @@ module velcro_mount() {
         // These fill the 90-degree corner between horizontal base and back of vertical wall
         gusset_depth = 12;  // mm, how far gusset extends back on base (in Y direction)
         gusset_height = 15;  // mm, height of triangular support up vertical arm (in Z direction)
-        gusset_thickness = 5;  // mm, thickness of gusset (in X direction)
+        // Gusset thickness matches the side wall thickness to avoid intruding into window
+        gusset_thickness = (base_width - channel_width) / 2;  // mm, matches window side wall thickness
 
         // Left gusset - right triangle in the YZ plane, extruded in X direction
         // Position: left side of mount (X=0), back corner where wall meets base
