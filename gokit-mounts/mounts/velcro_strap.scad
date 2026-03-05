@@ -50,12 +50,13 @@ module velcro_mount() {
 
             // Velcro channel (horizontal slot through vertical arm)
             // Positioned closer to top for better lower wall strength
+            // Height reduced to accommodate rounded top edge
             translate([
                 (base_width - channel_width) / 2,
                 base_depth - arm_thickness - 1,
-                base_height + arm_height - channel_height - 3  // 3mm from top
+                base_height + arm_height - channel_height - 3 + channel_radius  // Start above rounded bottom
             ])
-                cube([channel_width, arm_thickness + 2, channel_height - channel_radius]);
+                cube([channel_width, arm_thickness + 2, channel_height - 2 * channel_radius]);
 
             // Rounded bottom edge of window (half cylinder cutout)
             translate([
