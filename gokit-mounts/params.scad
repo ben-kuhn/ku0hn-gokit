@@ -9,7 +9,7 @@ slot_width = 8.1;           // mm, slot opening width — MEASURED on Vevor shel
 slot_spacing = 5.0;         // mm, rail width between slots
 shelf_thickness = 1.5;      // mm, shelf material thickness
 slot_tab_width = 8.0;       // mm, tab width (fits in 8.1mm slot)
-slot_tab_depth = 8.0;       // mm, tab depth (how far tab extends below shelf)
+slot_tab_depth = 1.0;       // mm, tab depth - just prevents rotation, allows washer clearance
 slot_tab_engage = 2.0;      // mm, minimum engagement depth for retention
 
 // ============================================================
