@@ -39,33 +39,24 @@ module velcro_mount() {
                         cylinder(h = base_width, r = 2, $fn = 32);
 
                 // Rounded top edge of window (additive half cylinder)
+                // Positioned at the top edge of the window opening
                 translate([
                     (base_width - channel_width) / 2,
                     base_depth - arm_thickness / 2,
-                    base_height + arm_height - 3 - channel_radius
+                    base_height + arm_height - 3  // Top of window opening
                 ])
                     rotate([0, 90, 0])
                         cylinder(h = channel_width, r = channel_radius, $fn = 32);
             }
 
             // Velcro channel (horizontal slot through vertical arm)
-            // Positioned closer to top for better lower wall strength
-            // Height reduced to accommodate rounded top edge
+            // Simple rectangular cutout - the additive rounded top will extend above this
             translate([
                 (base_width - channel_width) / 2,
                 base_depth - arm_thickness - 1,
-                base_height + arm_height - channel_height - 3 + channel_radius  // Start above rounded bottom
+                base_height + arm_height - channel_height - 3
             ])
-                cube([channel_width, arm_thickness + 2, channel_height - 2 * channel_radius]);
-
-            // Rounded bottom edge of window (half cylinder cutout)
-            translate([
-                (base_width - channel_width) / 2,
-                base_depth - arm_thickness / 2,
-                base_height + arm_height - channel_height - 3 + channel_radius
-            ])
-                rotate([0, 90, 0])
-                    cylinder(h = channel_width, r = channel_radius, $fn = 32);
+                cube([channel_width, arm_thickness + 2, channel_height]);
         }
 
         // Diagonal support gussets on each side (on back of vertical arm)
