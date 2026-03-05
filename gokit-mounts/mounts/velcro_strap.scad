@@ -81,31 +81,33 @@ module velcro_mount() {
         }
 
         // Diagonal support gussets on each side (on back of vertical arm)
-        // These brace the vertical arm to the horizontal base
-        gusset_depth = 8;  // mm, how far gusset extends back onto base
-        gusset_height = 10;  // mm, height of triangular support up vertical arm
-        gusset_thickness = 3;  // mm, thickness of gusset
+        // These fill the 90-degree corner between horizontal base and back of vertical wall
+        gusset_depth = 6;  // mm, how far gusset extends back on base (in Y direction)
+        gusset_height = 8;  // mm, height of triangular support up vertical arm (in Z direction)
+        gusset_thickness = 3;  // mm, thickness of gusset (in X direction)
 
-        // Left gusset - triangular brace on left side, back of vertical arm
-        // Triangle base on horizontal base, hypotenuse against back of vertical wall
-        translate([gusset_thickness, base_depth, base_height])
-            rotate([90, 0, -90])
-                linear_extrude(height = gusset_thickness)
-                    polygon([
-                        [0, 0],                    // Bottom front corner (at wall)
-                        [-gusset_depth, 0],        // Bottom back corner
-                        [0, gusset_height]         // Top front corner (at wall)
-                    ]);
+        // Left gusset - fills left side of back corner
+        // Extrude in X direction, polygon in YZ plane
+        translate([0, base_depth - gusset_depth, base_height])
+            rotate([0, -90, 0])
+                rotate([0, 0, 90])
+                    linear_extrude(height = gusset_thickness)
+                        polygon([
+                            [0, 0],                  // Origin at wall/base junction
+                            [gusset_height, 0],      // Up the wall
+                            [0, gusset_depth]        // Back along the base
+                        ]);
 
-        // Right gusset - triangular brace on right side, back of vertical arm
-        translate([base_width - gusset_thickness, base_depth, base_height])
-            rotate([90, 0, -90])
-                linear_extrude(height = gusset_thickness)
-                    polygon([
-                        [0, 0],                    // Bottom front corner (at wall)
-                        [-gusset_depth, 0],        // Bottom back corner
-                        [0, gusset_height]         // Top front corner (at wall)
-                    ]);
+        // Right gusset - fills right side of back corner
+        translate([base_width, base_depth - gusset_depth, base_height])
+            rotate([0, 90, 0])
+                rotate([0, 0, 90])
+                    linear_extrude(height = gusset_thickness)
+                        polygon([
+                            [0, 0],                  // Origin at wall/base junction
+                            [gusset_height, 0],      // Up the wall
+                            [0, gusset_depth]        // Back along the base
+                        ]);
     }
 }
 
