@@ -11,7 +11,7 @@ Building a ham radio go kit in a **Gator Cases 4U rack**. Two **Vevor 10" vented
 ### Shelf Layout
 
 - **Bottom shelf** — sits on floor of case (normal orientation)
-  - Kenwood TS-50S (on mobile mount with quick release)
+  - Kenwood TS-50S — stock mobile quick-release bracket mounted to shelf using carriage bolts through slots
   - MFJ-939 autotuner
 - **Upper shelf** — mounted inverted at 3rd RU from bottom
   - Top surface (faces up toward lid): Pinebook Pro, MeanWell LRS-350-12
@@ -28,7 +28,8 @@ Building a ham radio go kit in a **Gator Cases 4U rack**. Two **Vevor 10" vented
 ## Shelf Slot Details
 
 - Vevor 10" vented shelf
-- Slot dimensions: **~15mm x 5mm** — MEASURE WITH CALIPERS BEFORE FINALIZING
+- Slot dimensions: **8.1mm width x 5mm depth** — MEASURED WITH CALIPERS
+- **NOTE:** Slot width should be a configurable parameter in OpenSCAD files for reusability with other shelves
 - Slot tab provides location and rotation prevention only, not structural load
 - M5 washer OD is 10mm — verify clears slot edges from below
 
@@ -65,9 +66,9 @@ gokit-mounts/
 
 ```openscad
 // ============================================================
-// SHELF SLOT — measure with calipers before finalizing
+// SHELF SLOT — MEASURED (configurable for other shelves)
 // ============================================================
-slot_width = 15.0;          // mm, slot opening width
+slot_width = 8.1;           // mm, slot opening width — MEASURED on Vevor shelf
 slot_depth = 5.0;           // mm, slot opening depth
 slot_spacing = 5.0;         // mm, rail width between slots
 shelf_thickness = 1.5;      // mm, shelf material thickness
@@ -182,7 +183,7 @@ All zero values in params.scad must be measured on physical hardware with calipe
 
 | Parameter | Item to Measure |
 |---|---|
-| `slot_width`, `slot_depth`, `slot_spacing` | Vevor shelf slots |
+| ~~`slot_width`~~ (DONE: 8.1mm), `slot_depth`, `slot_spacing` | Vevor shelf slots |
 | `shelf_thickness` | Vevor shelf material |
 | `pbp_h` | Pinebook Pro closed thickness |
 | `pbp_w`, `pbp_d` | Pinebook Pro footprint |
