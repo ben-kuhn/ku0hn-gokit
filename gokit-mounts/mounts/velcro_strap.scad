@@ -37,6 +37,15 @@ module velcro_mount() {
                 translate([0, base_depth - arm_thickness / 2, base_height + arm_height - 2])
                     rotate([0, 90, 0])
                         cylinder(h = base_width, r = 2, $fn = 32);
+
+                // Rounded top edge of window (additive half cylinder)
+                translate([
+                    (base_width - channel_width) / 2,
+                    base_depth - arm_thickness / 2,
+                    base_height + arm_height - 3 - channel_radius
+                ])
+                    rotate([0, 90, 0])
+                        cylinder(h = channel_width, r = channel_radius, $fn = 32);
             }
 
             // Velcro channel (horizontal slot through vertical arm)
@@ -47,15 +56,6 @@ module velcro_mount() {
                 base_height + arm_height - channel_height - 3  // 3mm from top
             ])
                 cube([channel_width, arm_thickness + 2, channel_height - channel_radius]);
-
-            // Rounded top edge of window (half cylinder cutout)
-            translate([
-                (base_width - channel_width) / 2,
-                base_depth - arm_thickness / 2,
-                base_height + arm_height - 3 - channel_radius
-            ])
-                rotate([0, 90, 0])
-                    cylinder(h = channel_width, r = channel_radius, $fn = 32);
 
             // Rounded bottom edge of window (half cylinder cutout)
             translate([
