@@ -28,9 +28,16 @@ module velcro_mount() {
 
         // Vertical arm at back edge
         difference() {
-            // Solid vertical wall
-            translate([0, base_depth - arm_thickness, base_height])
-                cube([base_width, arm_thickness, arm_height]);
+            union() {
+                // Solid vertical wall (minus the top which will be rounded)
+                translate([0, base_depth - arm_thickness, base_height])
+                    cube([base_width, arm_thickness, arm_height - 2]);
+
+                // Rounded top edge of wall (half cylinder)
+                translate([0, base_depth - arm_thickness / 2, base_height + arm_height - 2])
+                    rotate([0, 90, 0])
+                        cylinder(h = base_width, r = 2, $fn = 32);
+            }
 
             // Velcro channel (horizontal slot through vertical arm)
             // Positioned closer to top for better lower wall strength
@@ -39,45 +46,25 @@ module velcro_mount() {
                 base_depth - arm_thickness - 1,
                 base_height + arm_height - channel_height - 3  // 3mm from top
             ])
-                cube([channel_width, arm_thickness + 2, channel_height]);
+                cube([channel_width, arm_thickness + 2, channel_height - channel_radius]);
 
-            // Add rounded corners on front and back edges of channel opening
-            // These are subtractive cylinders positioned at the corners
-            // Front left corner
+            // Rounded top edge of window (half cylinder cutout)
             translate([
-                (base_width - channel_width) / 2 + channel_radius,
-                base_depth - arm_thickness,
-                base_height + arm_height - channel_height - 3 + channel_radius
-            ])
-                rotate([90, 0, 0])
-                    cylinder(h = arm_thickness, r = channel_radius, center = true, $fn = 16);
-
-            // Front right corner
-            translate([
-                (base_width + channel_width) / 2 - channel_radius,
-                base_depth - arm_thickness,
-                base_height + arm_height - channel_height - 3 + channel_radius
-            ])
-                rotate([90, 0, 0])
-                    cylinder(h = arm_thickness, r = channel_radius, center = true, $fn = 16);
-
-            // Front left bottom corner
-            translate([
-                (base_width - channel_width) / 2 + channel_radius,
-                base_depth - arm_thickness,
+                (base_width - channel_width) / 2,
+                base_depth - arm_thickness / 2,
                 base_height + arm_height - 3 - channel_radius
             ])
-                rotate([90, 0, 0])
-                    cylinder(h = arm_thickness, r = channel_radius, center = true, $fn = 16);
+                rotate([0, 90, 0])
+                    cylinder(h = channel_width, r = channel_radius, $fn = 32);
 
-            // Front right bottom corner
+            // Rounded bottom edge of window (half cylinder cutout)
             translate([
-                (base_width + channel_width) / 2 - channel_radius,
-                base_depth - arm_thickness,
-                base_height + arm_height - 3 - channel_radius
+                (base_width - channel_width) / 2,
+                base_depth - arm_thickness / 2,
+                base_height + arm_height - channel_height - 3 + channel_radius
             ])
-                rotate([90, 0, 0])
-                    cylinder(h = arm_thickness, r = channel_radius, center = true, $fn = 16);
+                rotate([0, 90, 0])
+                    cylinder(h = channel_width, r = channel_radius, $fn = 32);
         }
 
         // Diagonal support gussets on each side (on back of vertical arm)
