@@ -8,7 +8,10 @@ include <../params.scad>
 
 module slot_mount_base() {
     // Horizontal base that sits on top of shelf
-    base_width = slot_tab_width + 2 * 4;  // 4mm wall on each side of tab
+    // Need enough width for: slot tab + walls around nut pocket
+    // Nut pocket circumradius ≈ 4.8mm, need 3mm wall minimum = 10.8mm radius
+    // So 21.6mm minimum, round up to 22mm for comfortable walls
+    base_width = 22;  // mm, provides 7mm wall on each side of slot tab
     base_depth = mount_body_d;
     base_height = mount_body_h;
 

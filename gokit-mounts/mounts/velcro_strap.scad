@@ -8,8 +8,8 @@ include <../params.scad>
 use <../lib/slot_mount.scad>
 
 module velcro_mount() {
-    // Calculate dimensions
-    base_width = slot_tab_width + 2 * 4;  // Match slot_mount_base
+    // Calculate dimensions - must match slot_mount_base
+    base_width = 22;  // mm, matches slot_mount_base
     base_depth = mount_body_d;
     base_height = mount_body_h;
 
