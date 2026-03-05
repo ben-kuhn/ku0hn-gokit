@@ -28,9 +28,9 @@ Building a ham radio go kit in a **Gator Cases 4U rack**. Two **Vevor 10" vented
 ## Shelf Slot Details
 
 - Vevor 10" vented shelf
-- Slot dimensions: **8.1mm width x 5mm depth** — MEASURED WITH CALIPERS
+- Slot width: **8.1mm** — MEASURED WITH CALIPERS
 - **NOTE:** Slot width should be a configurable parameter in OpenSCAD files for reusability with other shelves
-- Slot tab provides location and rotation prevention only, not structural load
+- Slots used for positioning and passing mounting hardware through
 - M5 washer OD is 10mm — verify clears slot edges from below
 
 ---
@@ -69,10 +69,8 @@ gokit-mounts/
 // SHELF SLOT — MEASURED (configurable for other shelves)
 // ============================================================
 slot_width = 8.1;           // mm, slot opening width — MEASURED on Vevor shelf
-slot_depth = 5.0;           // mm, slot opening depth
 slot_spacing = 5.0;         // mm, rail width between slots
 shelf_thickness = 1.5;      // mm, shelf material thickness
-slot_tab_engage = 2.0;      // mm, how far tab extends below shelf
 
 // ============================================================
 // M5 HARDWARE
@@ -136,10 +134,10 @@ bracket_arm_thickness = 4.0;   // mm, vertical arm thickness
 ### `lib/slot_mount.scad` — Base Module
 
 Reusable foundation for all mounts. Provides:
-- Slot tab sized to `slot_width - fit_clearance` x `slot_depth - fit_clearance`
-- Shoulder/lip that bears load on shelf surface
+- Base mounting interface for shelf attachment
 - M5 clearance hole through body
 - Hex nut pocket (side-loading) using `cylinder($fn=6)` with `cos(30)` circumradius conversion
+- Shoulder/lip that bears load on shelf surface
 
 Called by all equipment-specific mounts as their base.
 
@@ -183,7 +181,7 @@ All zero values in params.scad must be measured on physical hardware with calipe
 
 | Parameter | Item to Measure |
 |---|---|
-| ~~`slot_width`~~ (DONE: 8.1mm), `slot_depth`, `slot_spacing` | Vevor shelf slots |
+| ~~`slot_width`~~ (DONE: 8.1mm), `slot_spacing` | Vevor shelf slots |
 | `shelf_thickness` | Vevor shelf material |
 | `pbp_h` | Pinebook Pro closed thickness |
 | `pbp_w`, `pbp_d` | Pinebook Pro footprint |
@@ -198,9 +196,8 @@ All zero values in params.scad must be measured on physical hardware with calipe
 
 - **Material:** PLA acceptable — case operates open-ended, heat not a concern
 - **Nut pockets:** Side-loading preferred for assembly ease; print slightly undersized for press fit
-- **Slot tabs:** Orient vertically in slicer for best layer adhesion against shear
 - **Infill:** 40%+ for bracket arms; 20% acceptable for strap mount bodies
-- **Test print:** Print `slot_mount_base` test piece and verify fit in shelf slots before printing full mounts
+- **Test print:** Print `slot_mount_base` test piece and verify hardware fit before printing full mounts
 
 ---
 
