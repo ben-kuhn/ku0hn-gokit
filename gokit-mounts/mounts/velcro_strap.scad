@@ -20,7 +20,7 @@ module velcro_mount() {
     // Velcro channel dimensions
     channel_width = velcro_width + velcro_channel_clearance;
     channel_height = 6;  // mm, reduced for strength - just enough for velcro
-    channel_radius = 1.5;  // mm, radius for smoothed corners
+    channel_top_radius = 2.5;  // mm, radius for rounded top edge
 
     union() {
         // Horizontal base with slot tab and nut pocket
@@ -46,15 +46,15 @@ module velcro_mount() {
                     base_height + arm_height - 3  // Top of window opening
                 ])
                     rotate([0, 90, 0])
-                        cylinder(h = channel_width, r = channel_radius, $fn = 32);
+                        cylinder(h = channel_width, r = channel_top_radius, $fn = 32);
             }
 
             // Velcro channel (horizontal slot through vertical arm)
-            // Simple rectangular cutout - the additive rounded top will extend above this
+            // Simple rectangular cutout - ends below the rounded top
             translate([
                 (base_width - channel_width) / 2,
                 base_depth - arm_thickness - 1,
-                base_height + arm_height - channel_height - 3
+                base_height + arm_height - channel_height - 3 - channel_top_radius
             ])
                 cube([channel_width, arm_thickness + 2, channel_height]);
         }
