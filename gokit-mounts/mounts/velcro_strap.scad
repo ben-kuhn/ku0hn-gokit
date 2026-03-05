@@ -86,28 +86,26 @@ module velcro_mount() {
         gusset_height = 8;  // mm, height of triangular support up vertical arm (in Z direction)
         gusset_thickness = 3;  // mm, thickness of gusset (in X direction)
 
-        // Left gusset - fills left side of back corner
-        // Extrude in X direction, polygon in YZ plane
-        translate([0, base_depth - gusset_depth, base_height])
-            rotate([0, -90, 0])
-                rotate([0, 0, 90])
-                    linear_extrude(height = gusset_thickness)
-                        polygon([
-                            [0, 0],                  // Origin at wall/base junction
-                            [gusset_height, 0],      // Up the wall
-                            [0, gusset_depth]        // Back along the base
-                        ]);
+        // Left gusset - right triangle in the YZ plane, extruded in X direction
+        // Position: left side of mount (X=0), back corner where wall meets base
+        translate([0, base_depth, base_height])
+            rotate([90, 0, 90])
+                linear_extrude(height = gusset_thickness)
+                    polygon([
+                        [0, 0],                    // At back of wall, base of wall (origin)
+                        [-gusset_depth, 0],        // Back along base
+                        [0, gusset_height]         // Up the wall
+                    ]);
 
-        // Right gusset - fills right side of back corner
-        translate([base_width, base_depth - gusset_depth, base_height])
-            rotate([0, 90, 0])
-                rotate([0, 0, 90])
-                    linear_extrude(height = gusset_thickness)
-                        polygon([
-                            [0, 0],                  // Origin at wall/base junction
-                            [gusset_height, 0],      // Up the wall
-                            [0, gusset_depth]        // Back along the base
-                        ]);
+        // Right gusset - mirror on the right side
+        translate([base_width - gusset_thickness, base_depth, base_height])
+            rotate([90, 0, 90])
+                linear_extrude(height = gusset_thickness)
+                    polygon([
+                        [0, 0],                    // At back of wall, base of wall (origin)
+                        [-gusset_depth, 0],        // Back along base
+                        [0, gusset_height]         // Up the wall
+                    ]);
     }
 }
 
