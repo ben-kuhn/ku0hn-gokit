@@ -30,7 +30,8 @@ Building a ham radio go kit in a **Gator Cases 4U rack**. Two **Vevor 10" vented
 - Vevor 10" vented shelf
 - Slot width: **8.1mm** — MEASURED WITH CALIPERS
 - **NOTE:** Slot width should be a configurable parameter in OpenSCAD files for reusability with other shelves
-- Slots used for positioning and passing mounting hardware through
+- 3D-printed mounts use **8mm x 8mm tabs** to locate in slots
+- Slot tab provides location and rotation prevention only, not structural load
 - M5 washer OD is 10mm — verify clears slot edges from below
 
 ---
@@ -71,6 +72,9 @@ gokit-mounts/
 slot_width = 8.1;           // mm, slot opening width — MEASURED on Vevor shelf
 slot_spacing = 5.0;         // mm, rail width between slots
 shelf_thickness = 1.5;      // mm, shelf material thickness
+slot_tab_width = 8.0;       // mm, tab width (fits in 8.1mm slot)
+slot_tab_depth = 8.0;       // mm, tab depth (how far tab extends below shelf)
+slot_tab_engage = 2.0;      // mm, minimum engagement depth for retention
 
 // ============================================================
 // M5 HARDWARE
@@ -134,10 +138,10 @@ bracket_arm_thickness = 4.0;   // mm, vertical arm thickness
 ### `lib/slot_mount.scad` — Base Module
 
 Reusable foundation for all mounts. Provides:
-- Base mounting interface for shelf attachment
+- 8mm x 8mm slot tab sized to fit in 8.1mm shelf slots
+- Shoulder/lip that bears load on shelf surface
 - M5 clearance hole through body
 - Hex nut pocket (side-loading) using `cylinder($fn=6)` with `cos(30)` circumradius conversion
-- Shoulder/lip that bears load on shelf surface
 
 Called by all equipment-specific mounts as their base.
 
@@ -196,8 +200,9 @@ All zero values in params.scad must be measured on physical hardware with calipe
 
 - **Material:** PLA acceptable — case operates open-ended, heat not a concern
 - **Nut pockets:** Side-loading preferred for assembly ease; print slightly undersized for press fit
+- **Slot tabs:** Orient vertically in slicer for best layer adhesion against shear
 - **Infill:** 40%+ for bracket arms; 20% acceptable for strap mount bodies
-- **Test print:** Print `slot_mount_base` test piece and verify hardware fit before printing full mounts
+- **Test print:** Print `slot_mount_base` test piece and verify fit in shelf slots before printing full mounts
 
 ---
 
