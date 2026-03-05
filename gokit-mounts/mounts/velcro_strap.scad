@@ -9,7 +9,7 @@ use <../lib/slot_mount.scad>
 
 module velcro_mount() {
     // Calculate dimensions - must match slot_mount_base
-    base_width = 22;  // mm, matches slot_mount_base
+    base_width = 28;  // mm, matches slot_mount_base
     base_depth = mount_body_d;
     base_height = mount_body_h;
 
@@ -80,28 +80,33 @@ module velcro_mount() {
                     cylinder(h = arm_thickness, r = channel_radius, center = true, $fn = 16);
         }
 
-        // Diagonal support gussets on each side
-        gusset_height = 10;  // mm, height of triangular support
+        // Diagonal support gussets on each side (on back of vertical arm)
+        // These brace the vertical arm to the horizontal base
+        gusset_depth = 8;  // mm, how far gusset extends back onto base
+        gusset_height = 10;  // mm, height of triangular support up vertical arm
         gusset_thickness = 3;  // mm, thickness of gusset
 
-        // Left gusset
-        translate([0, base_depth - arm_thickness, base_height])
-            linear_extrude(height = gusset_thickness)
-                polygon([
-                    [0, 0],
-                    [gusset_height, 0],
-                    [0, gusset_height]
-                ]);
+        // Left gusset - triangular brace on left side, back of vertical arm
+        translate([0, base_depth - arm_thickness - gusset_depth, base_height])
+            rotate([0, 0, 0])
+                linear_extrude(height = gusset_thickness)
+                    polygon([
+                        [0, 0],
+                        [gusset_depth, 0],
+                        [gusset_depth, arm_thickness],
+                        [0, arm_thickness + gusset_height]
+                    ]);
 
-        // Right gusset
-        translate([base_width - gusset_thickness, base_depth - arm_thickness, base_height])
-            linear_extrude(height = gusset_thickness)
-                polygon([
-                    [0, 0],
-                    [gusset_thickness, 0],
-                    [gusset_thickness, gusset_height],
-                    [0, gusset_height]
-                ]);
+        // Right gusset - triangular brace on right side, back of vertical arm
+        translate([base_width - gusset_thickness, base_depth - arm_thickness - gusset_depth, base_height])
+            rotate([0, 0, 0])
+                linear_extrude(height = gusset_thickness)
+                    polygon([
+                        [0, 0],
+                        [gusset_depth, 0],
+                        [gusset_depth, arm_thickness],
+                        [0, arm_thickness + gusset_height]
+                    ]);
     }
 }
 
