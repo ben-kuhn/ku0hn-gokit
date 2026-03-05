@@ -87,25 +87,24 @@ module velcro_mount() {
         gusset_thickness = 3;  // mm, thickness of gusset
 
         // Left gusset - triangular brace on left side, back of vertical arm
-        translate([0, base_depth - arm_thickness - gusset_depth, base_height])
-            rotate([0, 0, 0])
+        // Triangle base on horizontal base, hypotenuse against vertical wall
+        translate([gusset_thickness, base_depth - arm_thickness, base_height])
+            rotate([90, 0, 90])
                 linear_extrude(height = gusset_thickness)
                     polygon([
-                        [0, 0],
-                        [gusset_depth, 0],
-                        [gusset_depth, arm_thickness],
-                        [0, arm_thickness + gusset_height]
+                        [0, 0],                    // Bottom back corner
+                        [gusset_depth, 0],         // Bottom front corner (at wall)
+                        [0, gusset_height]         // Top back corner
                     ]);
 
         // Right gusset - triangular brace on right side, back of vertical arm
-        translate([base_width - gusset_thickness, base_depth - arm_thickness - gusset_depth, base_height])
-            rotate([0, 0, 0])
+        translate([base_width - gusset_thickness, base_depth - arm_thickness, base_height])
+            rotate([90, 0, 90])
                 linear_extrude(height = gusset_thickness)
                     polygon([
-                        [0, 0],
-                        [gusset_depth, 0],
-                        [gusset_depth, arm_thickness],
-                        [0, arm_thickness + gusset_height]
+                        [0, 0],                    // Bottom back corner
+                        [gusset_depth, 0],         // Bottom front corner (at wall)
+                        [0, gusset_height]         // Top back corner
                     ]);
     }
 }
