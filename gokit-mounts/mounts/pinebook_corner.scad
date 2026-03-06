@@ -18,24 +18,47 @@ module pinebook_corner_mount() {
 
     total_height = floor_thickness + internal_height + ceiling_thickness;
 
-    union() {
-        // Floor
-        cube([corner_size, corner_size, floor_thickness]);
+    // Padding recess dimensions
+    padding_recess_depth = 2;  // mm, depth of recess for glued padding
+    padding_recess_size = 15;  // mm, size of square recess
 
-        // Wall 1 (along X axis)
-        cube([corner_size, wall_thickness, total_height]);
+    difference() {
+        union() {
+            // Floor
+            cube([corner_size, corner_size, floor_thickness]);
 
-        // Wall 2 (along Y axis)
-        cube([wall_thickness, corner_size, total_height]);
+            // Wall 1 (along X axis)
+            cube([corner_size, wall_thickness, total_height]);
 
-        // Ceiling (top surface)
-        translate([0, 0, floor_thickness + internal_height])
-            cube([corner_size, corner_size, ceiling_thickness]);
+            // Wall 2 (along Y axis)
+            cube([wall_thickness, corner_size, total_height]);
 
-        // Slot mount base extends out from floor as a continuation
-        // Positioned to the left of wall 2 (in -X direction)
-        translate([-base_width, 0, 0])
-            slot_mount_base();
+            // Ceiling (top surface)
+            translate([0, 0, floor_thickness + internal_height])
+                cube([corner_size, corner_size, ceiling_thickness]);
+
+            // Slot mount base extends out from floor as a continuation
+            // Positioned to the left of wall 2 (in -X direction)
+            translate([-base_width, 0, 0])
+                slot_mount_base();
+        }
+
+        // Padding recesses for rubber/fabric protection
+        // Recess in floor (top surface)
+        translate([wall_thickness, wall_thickness, floor_thickness - padding_recess_depth])
+            cube([padding_recess_size, padding_recess_size, padding_recess_depth + 0.1]);
+
+        // Recess in ceiling (bottom surface)
+        translate([wall_thickness, wall_thickness, floor_thickness + internal_height])
+            cube([padding_recess_size, padding_recess_size, padding_recess_depth + 0.1]);
+
+        // Recess in wall 1 (inside face)
+        translate([wall_thickness, wall_thickness - padding_recess_depth, floor_thickness])
+            cube([padding_recess_size, padding_recess_depth + 0.1, padding_recess_size]);
+
+        // Recess in wall 2 (inside face)
+        translate([wall_thickness - padding_recess_depth, wall_thickness, floor_thickness])
+            cube([padding_recess_depth + 0.1, padding_recess_size, padding_recess_size]);
     }
 }
 
