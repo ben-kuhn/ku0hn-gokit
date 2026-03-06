@@ -42,11 +42,9 @@ module pinebook_corner_mount() {
 // Helper to access base_width in this scope
 base_width = 28;  // mm, matches slot_mount_base
 
-// Render single mount for preview
+// Render mirrored pair for printing
 pinebook_corner_mount();
 
-// Uncomment to render mirrored pair for printing
-// pinebook_corner_mount();
-// translate([60, 0, 0])
-//     mirror([1, 0, 0])
-//         pinebook_corner_mount();
+translate([80, 0, 0])
+    mirror([1, 0, 0])
+        pinebook_corner_mount();
