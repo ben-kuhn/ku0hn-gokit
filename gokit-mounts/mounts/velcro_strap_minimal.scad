@@ -47,6 +47,16 @@ module velcro_mount_minimal() {
                 cylinder(h = m5_nut_h + 1,
                         d = (m5_nut_w + nut_pocket_tol) / cos(30),
                         $fn = 6);
+
+            // Notch at back for nut access (rectangular cutout)
+            // Allows nut to be inserted from the back
+            nut_access_width = (m5_nut_w + nut_pocket_tol) / cos(30) + 2;  // Nut diameter + clearance
+            translate([
+                (base_width - nut_access_width) / 2,
+                base_depth / 2,
+                base_height - m5_nut_h
+            ])
+                cube([nut_access_width, base_depth / 2 + 1, m5_nut_h + 1]);
         }
 
         // Vertical arm at back edge - built from separate pieces
