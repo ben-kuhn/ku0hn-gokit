@@ -1,65 +1,58 @@
 // ============================================================
 // Pinebook Pro Rear Corner Mount
 // ============================================================
-// Two vertical walls at 90° forming inside corner
-// Top retention arm extends over laptop to prevent lift/pivot
+// 3-sided hollow cube (box with one side open)
+// Slot mount tab attached to one of the sides
 // Used in pairs at rear left and rear right corners
 
 include <../params.scad>
 use <../lib/slot_mount.scad>
 
 module pinebook_corner_mount() {
-    // Use slot mount base
-    base_width = 28;  // mm, matches slot_mount_base
-    base_depth = mount_body_d;
-    base_height = mount_body_h;
+    // Corner box dimensions
+    wall_thickness = corner_wall_thickness;  // 4mm walls
+    box_height = corner_wall_h;  // 20mm tall
 
-    // Corner wall dimensions
-    wall_height = corner_wall_h;
-    wall_thickness = corner_wall_thickness;
-
-    // Dimensions for laptop fit (inside corner dimensions)
-    inside_width = pbp_w / 2 + pbp_clearance;  // Half the laptop width + clearance
+    // Inside dimensions (laptop fit with clearance)
+    inside_width = pbp_w / 2 + pbp_clearance;  // Half laptop width + clearance
     inside_depth = pbp_d + pbp_clearance;      // Full laptop depth + clearance
+    inside_height = pbp_h + pbp_clearance;     // Laptop thickness + clearance
 
-    union() {
-        // Horizontal base with slot tab and nut pocket
-        slot_mount_base();
+    // Outside dimensions
+    outside_width = inside_width + wall_thickness;
+    outside_depth = inside_depth + wall_thickness;
 
-        // Left wall (perpendicular to base, extends in +Y direction)
-        translate([0, base_depth, base_height])
-            cube([wall_thickness, inside_depth, wall_height]);
+    difference() {
+        union() {
+            // 3-sided hollow cube (bottom + 2 perpendicular sides)
+            // Bottom
+            cube([outside_width, outside_depth, wall_thickness]);
 
-        // Back wall (perpendicular to base, extends in +X direction)
-        translate([0, base_depth + inside_depth - wall_thickness, base_height])
-            cube([inside_width, wall_thickness, wall_height]);
+            // Side wall 1 (along X axis)
+            cube([outside_width, wall_thickness, box_height]);
 
-        // Top retention arm over left wall (extends inward over laptop)
-        translate([
-            0,
-            base_depth,
-            base_height + wall_height - corner_arm_thickness
-        ])
-            cube([corner_arm_length, wall_thickness, corner_arm_thickness]);
+            // Side wall 2 (along Y axis)
+            cube([wall_thickness, outside_depth, box_height]);
 
-        // Top retention arm over back wall (extends inward over laptop)
-        translate([
-            0,
-            base_depth + inside_depth - wall_thickness,
-            base_height + wall_height - corner_arm_thickness
-        ])
-            cube([wall_thickness, corner_arm_length, corner_arm_thickness]);
+            // Top retention lip (extends inward over laptop)
+            // Along side wall 1
+            translate([0, 0, inside_height + wall_thickness])
+                cube([corner_arm_length, wall_thickness, corner_arm_thickness]);
 
-        // Corner gusset at 90° junction of walls
-        translate([wall_thickness, base_depth + inside_depth - wall_thickness, base_height])
-            rotate([0, 0, 90])
-                linear_extrude(height = wall_height - corner_arm_thickness)
-                    polygon([
-                        [0, 0],
-                        [8, 0],
-                        [0, 8]
-                    ]);
+            // Along side wall 2
+            translate([0, 0, inside_height + wall_thickness])
+                cube([wall_thickness, corner_arm_length, corner_arm_thickness]);
+        }
+
+        // Hollow out the inside
+        translate([wall_thickness, wall_thickness, wall_thickness])
+            cube([inside_width, inside_depth, box_height]);
     }
+
+    // Slot mount base attached to side wall 2 (the one along Y axis)
+    translate([0, (outside_depth - mount_body_d) / 2, -mount_body_h])
+        rotate([0, 0, 0])
+            slot_mount_base();
 }
 
 // Render single mount for preview
