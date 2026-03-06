@@ -32,11 +32,10 @@ module pinebook_corner_mount() {
         translate([0, 0, floor_thickness + internal_height])
             cube([corner_size, corner_size, ceiling_thickness]);
 
-        // Slot mount base attached to OUTSIDE of wall 2
-        // Base lies flat against the exterior face of the wall
-        translate([-mount_body_d, 0, total_height / 2 - mount_body_h / 2])
-            rotate([0, 90, 0])
-                slot_mount_base();
+        // Slot mount base extends out from floor as a continuation
+        // Positioned to the left of wall 2 (in -X direction)
+        translate([-base_width, 0, 0])
+            slot_mount_base();
     }
 }
 
