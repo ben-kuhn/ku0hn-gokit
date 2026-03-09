@@ -24,7 +24,7 @@ m5_washer_od = 10.0;        // mm, washer OD - verify clears slot
 // TOLERANCES
 // ============================================================
 fit_clearance = 0.2;        // mm, slot tab fit clearance
-nut_pocket_tol = 0.3;       // mm, nut pocket oversize for capture
+nut_pocket_tol = 0.1;       // mm, nut pocket oversize for capture (reduced to prevent rotation)
 
 // ============================================================
 // VELCRO STRAP MOUNTS
