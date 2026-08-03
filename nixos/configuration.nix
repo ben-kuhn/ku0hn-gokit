@@ -174,6 +174,7 @@ in
       powerline-fonts
       pavucontrol
       gnome-tweaks
+      gnome-shell-extensions
       appimage-run
       solaar
     ];
