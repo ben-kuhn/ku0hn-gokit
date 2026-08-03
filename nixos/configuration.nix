@@ -66,6 +66,13 @@ in
     idle-dim=false
   '';
 
+  # Belt and braces: a gokit must never sleep. Mask all sleep targets so
+  # nothing (GNOME, logind, stray dbus calls) can suspend the machine.
+  systemd.targets.sleep.enable = false;
+  systemd.targets.suspend.enable = false;
+  systemd.targets.hibernate.enable = false;
+  systemd.targets.hybrid-sleep.enable = false;
+
   # Primary remote access path.
   systemd.services.gnome-remote-desktop = {
     wantedBy = [ "graphical.target" ];
