@@ -47,6 +47,25 @@ in
   services.displayManager.autoLogin.enable = true;
   services.displayManager.autoLogin.user = "ku0hn";
 
+  # Gokit is driven over RDP: never suspend, lock, or blank on inactivity.
+  services.desktopManager.gnome.extraGSettingsOverridePackages = with pkgs; [
+    gsettings-desktop-schemas
+    gnome-settings-daemon
+  ];
+  services.desktopManager.gnome.extraGSettingsOverrides = ''
+    [org.gnome.desktop.session]
+    idle-delay=uint32 0
+
+    [org.gnome.desktop.screensaver]
+    lock-enabled=false
+    idle-activation-enabled=false
+
+    [org.gnome.settings-daemon.plugins.power]
+    sleep-inactive-ac-type='nothing'
+    sleep-inactive-battery-type='nothing'
+    idle-dim=false
+  '';
+
   # Primary remote access path.
   systemd.services.gnome-remote-desktop = {
     wantedBy = [ "graphical.target" ];
