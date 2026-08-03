@@ -191,9 +191,11 @@ commissioning when plugged in).
   `~/Ham Radio`, which is already a Nextcloud sync folder carried over via
   `nextcloud.cfg` — no new sync entry needed. `~/.chirp` (app state) is
   copied once during install.
-- **pat mailbox**: default location (`~/.local/share/pat`). Add one new
-  Nextcloud folder-sync connection on **both** Enzo and the GoKit sharing
-  `~/.local/share/pat` directly (server folder `/pat`).
+- **pat mailbox**: default location (`~/.local/share/pat`). Enzo's
+  `nextcloud.cfg` already contains a folder-sync entry for it (folder 5:
+  `~/.local/share/pat/` ↔ server `/PAT`), so the config copy brings the
+  sync to the GoKit automatically — no new entries needed on either
+  machine.
 
 Caveat accepted: pat writes its mailbox while running, so running pat on
 both machines simultaneously can produce sync conflicts; the server-side
