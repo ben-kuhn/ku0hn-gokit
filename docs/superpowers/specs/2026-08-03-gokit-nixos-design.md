@@ -46,9 +46,9 @@ Carried over from Enzo unchanged:
 - fish as default shell, same user account `ku0hn` (same groups, same SSH
   authorized key). Passwords for `ku0hn` and root copied from Enzo's
   `/etc/shadow` hashes.
-- Printing (hplip, gutenprint), avahi, flatpak, AppImage binfmt, plocate,
-  fonts, Nix GC settings, QT gtk2 theme, allowUnfree,
-  permittedInsecurePackages.
+- Flatpak, AppImage binfmt, plocate, fonts, Nix GC settings, QT gtk2 theme,
+  allowUnfree, permittedInsecurePackages. (Printing/CUPS, hplip, gutenprint,
+  and avahi are NOT carried over — no printing on the gokit.)
 - OpenSSH with the same settings.
 - tncd service verbatim: server on 127.0.0.1:8005, callsign KU0HN, all three
   Bluetooth clients (UV-Pro, Mobilinkd TNC3, Mobilinkd TNC4). Bluetooth TNCs
@@ -71,10 +71,9 @@ paracon, xastir, pat, chirp, hamlib_4, tqsl, nanovna-saver, linbpq, ldsped,
 mercury-modem, packet-browser-client, minicom, socat, alsa-utils, screen.
 
 **Kept (general):** brave (only browser), sublime4, claude-code, opencode,
-nextcloud-client, plus the usual CLI base (wget, curl, git, htop, ncdu,
-unzip, gparted, file, fuse, vlc, pavucontrol, flameshot, gnome-tweaks,
-appimage-run, solaar, piper, simple-scan, wireguard-tools, python3 with
-pyserial/requests/pandas/pip).
+nextcloud-client, variety, plus the usual CLI base (wget, curl, git, htop,
+ncdu, unzip, gparted, file, fuse, vlc, pavucontrol, flameshot, gnome-tweaks,
+appimage-run, solaar, python3 with pyserial/requests/pandas/pip).
 
 **Dropped — dev:** docker + docker-compose, libvirtd/virt-manager/spice USB
 redirection, debootstrap, flatpak-builder, wireshark (+ group), hugo, gh,
@@ -95,8 +94,8 @@ config copy.
 
 **Dropped — desktop apps:** firefox, google-chrome, calibre, joplin-desktop,
 thunderbird, signal-desktop, telegram-desktop, gimp, libreoffice, audacity,
-easyeffects, transmission, variety, yubico-piv-tool, yubioath-flutter,
-yubikey-personalization udev package.
+easyeffects, transmission, piper, simple-scan, wireguard-tools,
+yubico-piv-tool, yubioath-flutter, yubikey-personalization udev package.
 
 ### Cloudflared
 
@@ -112,9 +111,10 @@ Enzo's token is tunnel-specific and is NOT copied.
 - udev: CP2102 (10c4:ea60, the only one in the box, no serial match) →
   `SYMLINK+="TS-50"`.
 - `systemd.services.rigctld-TS50` replaces `rigctld-TS2000`:
-  `rigctld -m 2011 -r /dev/TS-50 -s 9600 -P RTS -t 4532 -C ptt_type=RTS -C
-  serial_handshake=None` (model 2011 = TS-50S; PTT via RTS is the Digirig
-  wiring). Exact baud verified against the rig at commissioning.
+  `rigctld -m 2011 -r /dev/TS-50 -s 9600 -t 4532` (model 2011 = TS-50S).
+  **PTT via CAT** — the RTS PTT hack was TS-2000-specific (its data-jack PTT
+  requirement); the TS-50 keys via CAT commands, so no `-P`/`ptt_type`
+  overrides. Exact baud verified against the rig at commissioning.
 - `pat` systemd service wants/after `rigctld-TS50`, same port 4532, so the
   existing pat config keeps working.
 
@@ -127,21 +127,33 @@ Enzo's token is tunnel-specific and is NOT copied.
 ### CM108 disambiguation (key design point)
 
 Both Digirig and Digirig Lite expose identical C-Media audio+HID
-(0d8c:0012), so vendor/product matching cannot tell them apart. Strategy:
-**pin by physical USB port.**
+(0d8c:0012) with **no serial number descriptor and no user-writable EEPROM**
+— an identifier cannot be written to the device. But port pinning is not
+needed either: the two units are **structurally distinguishable**.
 
-1. Each Digirig is assigned a designated USB port on the GoKit (ports
-   labeled physically; documented in the repo).
-2. udev rules match on the USB port path (`KERNELS` / `ID_PATH`), not IDs:
-   - Rename ALSA cards via `ATTR{id}`: card at port A → `TS50`, card at
-     port B → `TM271`. Apps then use `plughw:CARD=TM271` etc.; boot-time
-     enumeration order stops mattering.
-   - hidraw symlink `/dev/Digirig-Lite` created only for the Lite's port
-     (Enzo's ID-only rule would have matched both units — fixed here).
-3. The full Digirig's hidraw is unused (its PTT is RTS on the CP2102).
-4. Digirigs are not yet attached to the target; rules are written against
-   the chosen ports now and verified when hardware is connected
-   (post-hardware checklist).
+Verified on Enzo (Digirig Mobile attached): the full Digirig contains an
+internal Microchip USB hub (0424:2412) with the CP2102 on hub port 1 and
+the CM108 on hub port 2. The Digirig Lite is a bare CM108 with no hub.
+
+udev rules (ordered, using GOTO so the Lite rule only fires when the hub
+rule didn't):
+
+1. Sound card whose ancestor chain contains hub 0424:2412 →
+   `ATTR{id}="TS50"` (renames the ALSA card).
+2. Otherwise, sound card from 0d8c:0012 → `ATTR{id}="TM271"`.
+3. hidraw from 0d8c:0012 NOT behind the 0424:2412 hub →
+   `SYMLINK+="Digirig-Lite"` (Enzo's ID-only rule would have matched both
+   units — fixed here). The full Digirig's hidraw is unused (TS-50 PTT is
+   CAT).
+
+Apps then address `plughw:CARD=TS50` / `plughw:CARD=TM271` regardless of
+USB port or enumeration order.
+
+Caveats: the Lite must not be connected through an external hub that uses a
+Microchip 0424:2412 hub chip (common in docks) or it would false-match —
+plug it into a direct port. The ALSA-rename rule for the full Digirig is
+testable on Enzo right now since the hardware is attached; the Lite rule is
+verified at commissioning.
 
 ## User configuration copied from Enzo
 
@@ -156,7 +168,22 @@ Both Digirig and Digirig Lite expose identical C-Media audio+HID
 | CHIRP | `~/.chirp/` | app state; radio images sync via the `~/Ham Radio` Nextcloud folder |
 | VARA | `~/vara/` (WINEPREFIX, ~800 MB) | VARA HF + FM under wine; audio device selection re-checked at commissioning |
 | Nextcloud | `~/.config/Nextcloud/nextcloud.cfg` | credentials are in GNOME keyring → one-time re-auth on first login |
-| WSJT-X | package only, no config | per user request |
+| WSJT-X | `~/.config/WSJT-X.ini` + `~/.local/share/WSJT-X/` | config plus logs/ADIF; rig stays "Hamlib NET rigctl" at 4532 |
+
+## GPS receiver — time source and position
+
+The GoKit has a GPS receiver available (exact model/USB IDs identified at
+commissioning when plugged in).
+
+- **gpsd** enabled, reading the receiver (udev symlink `/dev/gps0` for the
+  receiver's IDs; finalized at commissioning).
+- **chrony** replaces systemd-timesyncd: NTP pools preferred when internet
+  is available, gpsd SHM refclock as the fallback time source when
+  off-grid (field ops without connectivity still get usable time for
+  WSJT-X/JS8-style modes and logging).
+- **pat** already points at gpsd (`localhost:2947` in config.json) — works
+  as soon as gpsd runs. Other gpsd-aware apps (xastir, direwolf beaconing)
+  can use the same socket.
 
 ## CHIRP + pat mailbox sync (both machines)
 
@@ -165,8 +192,8 @@ Both Digirig and Digirig Lite expose identical C-Media audio+HID
   `nextcloud.cfg` — no new sync entry needed. `~/.chirp` (app state) is
   copied once during install.
 - **pat mailbox**: default location (`~/.local/share/pat`). Add one new
-  Nextcloud folder-sync connection on **both** Enzo and the GoKit:
-  `~/.local/share/pat` ↔ server `/Sync/pat`.
+  Nextcloud folder-sync connection on **both** Enzo and the GoKit sharing
+  `~/.local/share/pat` directly (server folder `/pat`).
 
 Caveat accepted: pat writes its mailbox while running, so running pat on
 both machines simultaneously can produce sync conflicts; the server-side
@@ -196,9 +223,13 @@ live in this repo under `nixos/`. This spec lives in
 
 ## Post-hardware commissioning checklist (delivered as a doc in the repo)
 
-- Plug Digirig into its labeled port, Digirig Lite into its labeled port;
+- Plug in both Digirigs (any direct USB port; Lite not through a hub);
   verify `/dev/TS-50`, `/dev/Digirig-Lite`, ALSA cards `TS50`/`TM271`.
-- Verify rigctld-TS50 talks to the TS-50 (baud/menu settings on rig).
+- Verify rigctld-TS50 talks to the TS-50 (baud/menu settings on rig) and
+  CAT PTT keys the rig.
+- Plug in the GPS receiver; record its USB IDs, finalize the `/dev/gps0`
+  udev rule, verify gpsd fix and chrony GPS refclock; confirm pat sees
+  position.
 - direwolf receive/transmit test on the TM-271.
 - Pair the three Bluetooth TNCs; verify tncd clients connect.
 - First GNOME login: Nextcloud re-auth, gnome-remote-desktop credentials.
