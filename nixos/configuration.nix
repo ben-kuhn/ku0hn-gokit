@@ -352,11 +352,8 @@ in
     ENV{DIGIRIG_HID}=="1", SYMLINK+="Digirig-Lite", MODE="0660", GROUP="plugdev"
     LABEL="digirig_end"
 
-    # GPS receiver -> /dev/gps0 (covers u-blox, Prolific, CH340 serial
-    # GPS dongles; confirm actual IDs at commissioning).
+    # GPS receiver -> /dev/gps0 (u-blox, verified 1546:01a7). If the puck is ever replaced with a non-u-blox unit, add its IDs here.
     SUBSYSTEM=="tty", ATTRS{idVendor}=="1546", SYMLINK+="gps0"
-    SUBSYSTEM=="tty", ATTRS{idVendor}=="067b", SYMLINK+="gps0"
-    SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", SYMLINK+="gps0"
   '';
 
   # GSD udev package needed for GNOME indicators.
