@@ -41,6 +41,12 @@ Carried over from Enzo unchanged:
 - GNOME + GDM, autologin as `ku0hn`, autoSuspend off,
   gnome-remote-desktop wanted by graphical.target (this is the remote-access
   path).
+- **Never suspend/lock on inactivity** (added post-install): when driven
+  over RDP, "inactive" is the normal state. Declarative GSettings
+  overrides: `sleep-inactive-ac-type='nothing'`,
+  `sleep-inactive-battery-type='nothing'`, `idle-delay=0` (no screen
+  blank), screensaver `lock-enabled=false` and
+  `idle-activation-enabled=false`.
 - Pipewire with the 9k6 low-latency tuning (192 kHz clock, quantum 32,
   wireplumber ALSA low-latency lua, pulse low-latency config).
 - fish as default shell, same user account `ku0hn` (same groups, same SSH
@@ -121,8 +127,7 @@ Enzo's token is tunnel-specific and is NOT copied.
 ### TM-271 + Digirig Lite (VHF)
 
 - No CAT. Audio + PTT via CM108 GPIO on the Lite's hidraw device.
-- direwolf: `PTT CM108 /dev/Digirig-Lite`, ADEVICE addressed by pinned ALSA
-  card name (below).
+- direwolf: `PTT CM108 /dev/Digirig-Lite`, audio via pipewire with per-app routing; the renamed ALSA cards (below) make the right device identifiable.
 
 ### CM108 disambiguation (key design point)
 
@@ -160,7 +165,7 @@ verified at commissioning.
 | What | From | Notes |
 |---|---|---|
 | pat | `~/.config/pat/*.json` | all three configs |
-| direwolf | `~/direwolf-*.conf` | ADEVICE/PTT lines adapted to `plughw:CARD=...` + `/dev/Digirig-Lite` |
+| direwolf | `~/direwolf-*.conf` | PTT line adapted to CM108 `/dev/Digirig-Lite`; ADEVICE stays `pipewire` (per-app routing at commissioning) |
 | QtSoundModem | `~/QtSoundModem.ini` | audio device fields reviewed at commissioning |
 | QtTermTCP | `~/QtTermTCP.ini` | |
 | paracon | `~/paracon.cfg` | |
@@ -219,7 +224,7 @@ live in this repo under `nixos/`. This spec lives in
 5. `nixos-install` with password hashes injected from Enzo's `/etc/shadow`.
 6. Reboot, verify boot to GNOME autologin.
 7. rsync user configs (table above) from Enzo to the GoKit as `ku0hn`.
-8. Add the two new Nextcloud sync-folder entries on both machines.
+8. Nextcloud sync entries carry over via the copied nextcloud.cfg (includes the existing ~/.local/share/pat ↔ /PAT folder); nothing to add.
 9. Verify: systemd services (pat, tncd up; rigctld-TS50 restarting until
    hardware attached is expected), firewall rules, remote desktop.
 
@@ -236,7 +241,7 @@ live in this repo under `nixos/`. This spec lives in
 - Pair the three Bluetooth TNCs; verify tncd clients connect.
 - First GNOME login: Nextcloud re-auth, gnome-remote-desktop credentials.
 - Create new Cloudflare tunnel, drop token into `/etc/cloudflared/env`.
-- WSJT-X initial setup (no config copied).
+- WSJT-X: config copied from Enzo; verify rig connection (Hamlib NET rigctl, localhost:4532) on first run.
 
 ## Out of scope
 

@@ -2,6 +2,8 @@
 
 Status: system installed and verified 2026-08-03; items below require the rigs/hardware physically attached.
 
+Pending: apply the staged config (`sudo cp ~/configuration-new.nix /etc/nixos/configuration.nix && sudo nixos-rebuild switch && rm ~/configuration-new.nix`), then log out/in once — this activates the gnome-shell-extensions package (system-monitor extension) and the narrowed GPS udev rule.
+
 ## Digirigs
 - Plug both Digirigs into any direct USB ports. Do NOT put the Digirig
   Lite behind an external hub (Microchip 0424:2412 hub chips would make
