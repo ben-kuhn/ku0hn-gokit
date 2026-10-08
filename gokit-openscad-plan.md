@@ -15,7 +15,7 @@ Building a ham radio go kit in a **Gator Cases 4U rack**. Two **Vevor 10" vented
   - MFJ-939 autotuner
 - **Upper shelf** — mounted inverted at 3rd RU from bottom
   - Top surface (faces up toward lid): Pinebook Pro, MeanWell LRS-350-12
-  - Front face: SWR meter (1U gap)
+  - Front face: AnTuner AT-100M Pro hangs on a spacer below the shelf front lip (replaces the SWR meter — the AT-100M Pro is too short to clear the lip when mounted in the 1U gap)
   - Bottom surface (faces down): Mirage BD-35 HT amplifier
 
 ### Loose Equipment (velcro or strap mounted)
@@ -28,9 +28,9 @@ Building a ham radio go kit in a **Gator Cases 4U rack**. Two **Vevor 10" vented
 ## Shelf Slot Details
 
 - Vevor 10" vented shelf
-- Slot width: **8.1mm** — MEASURED WITH CALIPERS
-- **NOTE:** Slot width should be a configurable parameter in OpenSCAD files for reusability with other shelves
-- 3D-printed mounts use **8mm x 8mm tabs** to locate in slots
+- Long slots (rails), **8mm wide**, **12mm between slots** — MEASURED → **20mm pitch**
+- **NOTE:** Slot dimensions should be configurable parameters in OpenSCAD files for reusability with other shelves
+- 3D-printed mounts use **7.6mm x 7.6mm tabs** (0.4mm clearance) to locate in the 8mm slots
 - Slot tab provides location and rotation prevention only, not structural load
 - M5 washer OD is 10mm — verify clears slot edges from below
 
@@ -58,6 +58,7 @@ gokit-mounts/
 │   ├── velcro_strap.scad    # universal velcro strap mount pair
 │   ├── pinebook_l.scad      # Pinebook Pro front L-mounts (x2)
 │   ├── pinebook_corner.scad # Pinebook Pro rear corner mounts (x2)
+│   ├── antuner_spacer.scad  # AnTuner AT-100M Pro hanging spacer/cradle
 │   └── mfj939_bracket.scad  # MFJ-939 side panel brackets (x4)
 ```
 
@@ -69,11 +70,12 @@ gokit-mounts/
 // ============================================================
 // SHELF SLOT — MEASURED (configurable for other shelves)
 // ============================================================
-slot_width = 8.1;           // mm, slot opening width — MEASURED on Vevor shelf
-slot_spacing = 5.0;         // mm, rail width between slots
+slot_width = 8.0;           // mm, slot opening width — MEASURED (long rails)
+slot_spacing = 12.0;        // mm, rail width between slots — MEASURED
+slot_pitch = slot_width + slot_spacing;  // mm, slot center-to-center (20.0)
 shelf_thickness = 1.5;      // mm, shelf material thickness
-slot_tab_width = 8.0;       // mm, tab width (fits in 8.1mm slot)
-slot_tab_depth = 8.0;       // mm, tab depth (how far tab extends below shelf)
+slot_tab_width = 7.6;       // mm, tab width (0.4mm clearance in an 8mm slot)
+slot_tab_depth = 1.0;       // mm, tab depth (top-mount tabs; anti-rotation only)
 slot_tab_engage = 2.0;      // mm, minimum engagement depth for retention
 
 // ============================================================
@@ -118,6 +120,33 @@ corner_arm_length = 15.0;     // mm, top retention arm extends over laptop
 corner_arm_thickness = 4.0;   // mm
 
 // ============================================================
+// ANTUNER AT-100M PRO — MEASURED
+// ============================================================
+antuner_w = 74.0;              // mm, width (front panel with screen/power/tune)
+antuner_h = 29.0;              // mm, height (front panel)
+antuner_d = 154.0;             // mm, front-to-back case depth
+antuner_ctrl_top = 6.0;        // mm, screen/tune buttons offset down from top edge
+antuner_fit = 1.0;             // mm, clearance between tuner side and cradle wall
+shelf_lip_h = 15.3;            // mm, front lip height that blocks the controls — MEASURED
+
+// Hanging spacer
+antuner_drop = shelf_lip_h + 3.0;  // mm, tuner top below shelf underside (clears lip)
+antuner_wall = 4.0;                // mm, cradle wall thickness
+antuner_plate_t = 5.0;             // mm, top frame thickness (4mm nut pocket + 1mm skin)
+antuner_cradle_len = 74.0;         // mm, cradle band along the tuner (sits mid-tuner)
+antuner_foot = 3.0;                // mm, wall extension below tuner bottom
+antuner_channel_h = 6.0;           // mm, upper strap window height
+antuner_channel_w = 22.0;          // mm, strap slot / window width
+antuner_strap_y = 20.0;            // mm, strap positions each side of cradle center
+antuner_ledge = 4.0;               // mm, register ledge the tuner top rests against
+antuner_ledge_t = 3.0;             // mm, register ledge thickness
+antuner_bar_h = 11.0;              // mm, half-depth of the central tab bar (Y)
+antuner_rail_w = 8.0;              // mm, front/back frame rail width (Y)
+antuner_window_h = 9.0;            // mm, upper strap window height (Z)
+antuner_tab_h = shelf_thickness + 0.5;  // mm, slot tab height
+antuner_tab_x = 20.0;              // mm, tab offset X, directly above the tuner; must land on a rail — MEASURE
+
+// ============================================================
 // MFJ-939 BRACKETS — measure on physical unit
 // ============================================================
 mfj939_chassis_w = 0.0;        // mm, outside width — MEASURE
@@ -138,7 +167,7 @@ bracket_arm_thickness = 4.0;   // mm, vertical arm thickness
 ### `lib/slot_mount.scad` — Base Module
 
 Reusable foundation for all mounts. Provides:
-- 8mm x 8mm slot tab sized to fit in 8.1mm shelf slots
+- 7.6mm x 7.6mm slot tab sized to fit in the 8mm shelf slots with clearance
 - Shoulder/lip that bears load on shelf surface
 - M5 clearance hole through body
 - Hex nut pocket (side-loading) using `cylinder($fn=6)` with `cos(30)` circumradius conversion
@@ -151,7 +180,7 @@ Called by all equipment-specific mounts as their base.
 - Each mount has slot_mount_base plus a velcro channel through the body
 - Channel edges have radius to prevent velcro abrasion
 - Slight inward angle on channel directs strap tension downward
-- Used for: BD-35, LRS-350-12, SWR meter, battery, PowerMini 2, Digirig
+- Used for: BD-35, LRS-350-12, battery, PowerMini 2, Digirig
 
 ### `mounts/pinebook_l.scad` — Pinebook Front L-Mounts (x2)
 
@@ -177,6 +206,19 @@ Called by all equipment-specific mounts as their base.
 - Inside span between left and right bracket pairs set to `mfj939_chassis_w + fit_clearance`
 - Tuner is captured laterally between the four brackets
 
+### `mounts/antuner_spacer.scad` — AnTuner Hanging Spacer (x1)
+
+Single-piece cradle that mounts to the shelf slots from **below** and holds the AnTuner AT-100M Pro under the shelf, dropped below the front lip so the screen/power/tune buttons are accessible.
+
+- **Lean frame:** two side walls + a central tab bar + front/back rails, with open windows between them (no solid top plate)
+- **Slot tabs:** two tabs pointing **up** into the slots, directly above the tuner on the central bar (`antuner_tab_x`) — keeps the frame narrow
+- **Hardware (flipped vs. the top-mount brackets):** M5 screw + 10mm washer from **above** the shelf, through the slot, into an M5 hex nut **pressed up** into a fully-surrounding hex pocket from below (1mm skin remains on top)
+- **Register ledges:** inward ledges on the walls set the tuner top at `antuner_drop` below the shelf underside (below `shelf_lip_h`)
+- **Full strap loop:** under the tuner → out through a **lower slot open at the wall's bottom edge** (no material wasted below it) → up **outside** the wall → back in through an **upper wall window** (above the tuner) → across the top → out the other side and round. The strap never touches the tuner top. Two straps at `antuner_strap_y`.
+- **Compact band:** centered mid-tuner (`antuner_cradle_len`); slots are long rails so only the tab X spacing must match the rail pitch
+- Print plate-down (walls up): `print_orientation = true;`
+- ~41 cm³ of material (~50 g PLA)
+
 ---
 
 ## Measurements Required Before Modeling
@@ -185,8 +227,10 @@ All zero values in params.scad must be measured on physical hardware with calipe
 
 | Parameter | Item to Measure |
 |---|---|
-| ~~`slot_width`~~ (DONE: 8.1mm), `slot_spacing` | Vevor shelf slots |
+| ~~`slot_width`~~ (DONE: 8mm), ~~`slot_spacing`~~ (DONE: 12mm → 20mm pitch) | Vevor shelf slots (long rails) |
 | `shelf_thickness` | Vevor shelf material |
+| ~~`shelf_lip_h`~~ (DONE: 15.3mm) | Shelf front lip height |
+| `antuner_tab_x` | Tab offset above the tuner; `2*antuner_tab_x` must be a whole `slot_pitch` (20mm) — e.g. 20 (rails under x=0) or 10/30 (rails offset 10mm) |
 | `pbp_h` | Pinebook Pro closed thickness |
 | `pbp_w`, `pbp_d` | Pinebook Pro footprint |
 | `mfj939_chassis_w` | MFJ-939 outside chassis width |
@@ -202,6 +246,7 @@ All zero values in params.scad must be measured on physical hardware with calipe
 - **Nut pockets:** Side-loading preferred for assembly ease; print slightly undersized for press fit
 - **Slot tabs:** Orient vertically in slicer for best layer adhesion against shear
 - **Infill:** 40%+ for bracket arms; 20% acceptable for strap mount bodies
+- **AnTuner spacer:** print plate-down / arms-up (`print_orientation = true`) — no supports required; the register ledges are small overhangs
 - **Test print:** Print `slot_mount_base` test piece and verify fit in shelf slots before printing full mounts
 
 ---
@@ -211,3 +256,4 @@ All zero values in params.scad must be measured on physical hardware with calipe
 - Velcro strap mounts: place pair, drop nuts in pockets, feed M5 + washer from below, snug down, thread velcro strap through both mounts and over gear
 - Pinebook: install rear corner mounts first, tilt laptop to seat rear corners, drop front under L-mount arms, confirm top retention arms engage on all four mounts
 - MFJ-939: install bracket pairs aligned to chassis screw holes, set tuner in position between brackets, drive longer chassis screws through bracket arms into side panels
+- AnTuner spacer: press a hex nut up into each pocket from below (2x), hold the frame under the shelf with the tabs in the slots, run M5 screw + washer from above through each slot and snug down — shelf clamps between washer and frame. Lift the AnTuner up between the walls until its top rests on the register ledges, then run each velcro strap under the tuner, out through a lower wall slot, up the outside of the wall, back in through the upper window, across the top, and cinch. Verify the screen/power/tune buttons sit below the front lip.

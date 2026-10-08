@@ -5,10 +5,11 @@
 // ============================================================
 // SHELF SLOT — MEASURED (configurable for other shelves)
 // ============================================================
-slot_width = 8.1;           // mm, slot opening width — MEASURED on Vevor shelf
-slot_spacing = 5.0;         // mm, rail width between slots
+slot_width = 8.0;           // mm, slot opening width — MEASURED (long rails)
+slot_spacing = 12.0;        // mm, rail width between slots — MEASURED
+slot_pitch = slot_width + slot_spacing;  // mm, slot center-to-center (20.0)
 shelf_thickness = 1.5;      // mm, shelf material thickness
-slot_tab_width = 8.0;       // mm, tab width (fits in 8.1mm slot)
+slot_tab_width = 7.6;       // mm, tab width (0.4mm clearance in an 8mm slot)
 slot_tab_depth = 1.0;       // mm, tab depth - just prevents rotation, allows washer clearance
 slot_tab_engage = 2.0;      // mm, minimum engagement depth for retention
 
@@ -52,6 +53,39 @@ corner_wall_thickness = 4.0;  // mm
 corner_wall_h = 20.0;         // mm, should be > pbp_h + corner_arm_thickness
 corner_arm_length = 15.0;     // mm, top retention arm extends over laptop
 corner_arm_thickness = 4.0;   // mm
+
+// ============================================================
+// ANTUNER AT-100M PRO — MEASURED
+// ============================================================
+antuner_w = 74.0;           // mm, width (front panel with screen/power/tune)
+antuner_h = 29.0;           // mm, height (front panel)
+antuner_d = 154.0;          // mm, front-to-back case depth
+antuner_ctrl_top = 6.0;     // mm, screen/tune buttons offset down from top edge
+antuner_fit = 1.0;          // mm, clearance between tuner side and cradle wall
+
+// ============================================================
+// SHELF FRONT LIP
+// ============================================================
+shelf_lip_h = 15.3;         // mm, front lip height that blocks the controls — MEASURED
+
+// ============================================================
+// ANTUNER HANGING SPACER (mounts to shelf slots, tuner hangs below lip)
+// ============================================================
+antuner_drop = shelf_lip_h + 3.0;      // mm, tuner top below shelf underside (clears lip)
+antuner_wall = 4.0;                    // mm, cradle wall thickness
+antuner_plate_t = 5.0;                 // mm, top frame thickness (4mm nut pocket + 1mm skin)
+antuner_cradle_len = 74.0;             // mm, cradle band along the tuner (sits mid-tuner)
+antuner_foot = 3.0;                    // mm, wall extension below tuner bottom
+antuner_channel_h = 6.0;               // mm, upper strap window height
+antuner_channel_w = 22.0;              // mm, strap slot / window width
+antuner_strap_y = 20.0;                // mm, strap positions each side of cradle center
+antuner_ledge = 4.0;                   // mm, register ledge the tuner top rests against
+antuner_ledge_t = 3.0;                 // mm, register ledge thickness
+antuner_bar_h = 11.0;                  // mm, half-depth of the central tab bar (Y)
+antuner_rail_w = 8.0;                  // mm, front/back frame rail width (Y)
+antuner_window_h = 9.0;                // mm, upper strap window height (Z)
+antuner_tab_h = shelf_thickness + 0.5; // mm, slot tab height (up into the slot)
+antuner_tab_x = 20.0;                  // mm, tab offset X, directly above the tuner; must land on a rail — MEASURE
 
 // ============================================================
 // MFJ-939 BRACKETS — measure on physical unit
